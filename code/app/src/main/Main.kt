@@ -3,14 +3,16 @@ import java.io.File
 //http://thetechnocafe.com/build-a-file-explorer-in-kotlin-part-5-creating-deleting-files-and-folders/
 //Referencias
 
-var currentFolder = "./"
+var currentFolder = ArrayList<String>()
+
 
 fun main(args: Array<String>) {
-
+currentFolder.add("./")
 var cmd : String = "";
 
 while(cmd !=  "exit" ){
-		print("$currentFolder > ");
+		print(stackFolder());
+		print(" > ");
 		cmd = readLine()!!;
 		var cmd_parts = cmd.split(" ");
 		when(cmd_parts[0]){
@@ -44,19 +46,22 @@ fun  cd_command(cmd_parts: List<String>){
 	
 	if (existParam(cmd_parts, "cd")){
 
-		if(cmd_parts[1] == "./") currentFolder = "./"
+		//if(cmd_parts[1] == "./") currentFolder = "./"
 
-		if (!existFolder(cmd_parts[1])) {
+		if(cmd_parts[1] == ".."){ 
+			stackFolderBack()
+		}
+		else if (!existFolder(cmd_parts[1])) {
 			println("cd: ${cmd_parts[1]}: Arquivo ou diretório inexistente");
 		}else{	
-			currentFolder = "$currentFolder${cmd_parts[1]}/"
+			currentFolder.add("${cmd_parts[1]}/")
 		}
 	
 	}
 }
 
 fun  ls_command(){
-	val folders = File(currentFolder).listFiles().map{ it.name }
+	val folders = File(stackFolder()).listFiles().map{ it.name }
 	for (name in folders){
 		print("$name ")
 	}
@@ -70,7 +75,7 @@ fun mkdir_command(cmd_parts: List<String>){
 		if (existFolder(cmd_parts[1])) {
 			println("mkdir: não foi possível criar o diretório “${cmd_parts[1]}”: Arquivo existe");
 		}else{
-			val file = File(currentFolder,cmd_parts[1])
+			val file = File(stackFolder(),cmd_parts[1])
 			try{
 				file.mkdir()
 			}catch(e: Exception){
@@ -88,7 +93,7 @@ fun rmdir_command(cmd_parts: List<String>){
 		if (!existFolder(cmd_parts[1])) {
 			println("rmdir: falhou em remover “${cmd_parts[1]}”: Arquivo ou diretório inexistente");
 		}else{
-			val file = File(currentFolder,cmd_parts[1])
+			val file = File(stackFolder(),cmd_parts[1])
 			//if (file.isDirectory) {
 			file.deleteRecursively()
 			//} else {
@@ -98,6 +103,7 @@ fun rmdir_command(cmd_parts: List<String>){
 	}
 }
 
+
 fun existParam(cmd_parts: List<String>, command: String ): Boolean{
 	if(cmd_parts.size < 2 || cmd_parts[1] == ""){
 		println("Tente 'man $command' para mais informações.")
@@ -106,4 +112,19 @@ fun existParam(cmd_parts: List<String>, command: String ): Boolean{
 	return true
 } 
 
-fun existFolder(folder: String) = File(currentFolder).listFiles().map{ it.name }.contains(folder)
+fun existFolder(folder: String) = File(stackFolder()).listFiles().map{ it.name }.contains(folder)
+
+fun stackFolder():String{
+	var tmpFolder = ""
+	for (i in currentFolder){
+		tmpFolder = "$tmpFolder$i"
+	}
+
+	return tmpFolder
+}
+
+fun stackFolderBack(){
+	if(currentFolder.size > 1){
+		currentFolder.removeAt(currentFolder.size-1)
+	}
+}
