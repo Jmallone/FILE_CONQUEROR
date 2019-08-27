@@ -46,11 +46,19 @@ fun main(args: Array<String>) {
 				"rmdir" -> rmdir_command(cmd_parts)
 				"clear" -> print("${ESC}c")
 				"man" -> man_command(cmd_parts)
+				"cat" -> cat_command(cmd_parts)
+				"rm" -> rm_command(cmd_parts)
+				"mv" -> mv_command(cmd_parts)
 				"exit" -> println("Saindo do Shell!")
 				else -> println("Esse comando não existe, tente 'man help'.")
 			}
 
 	}
+}
+
+fun mv_command(cmd_parts: List<String>){
+	var tmp = File("ola").isDirectory()
+	println(tmp)
 }
 
 fun logo_command(): String{
@@ -109,7 +117,7 @@ fun  cd_command(cmd_parts: List<String>){
 fun  ls_command(){
 	val folders = File(stackFolder()).listFiles().map{ it.name }
 	for (name in folders){
-		if(File(name).isDirectory()){
+		if(File(stackFolder()+name).isDirectory()){
 			print("$NORMAL$CYAN$name $WHITE_F")
 		}else{
 			print("$name ")
@@ -117,6 +125,19 @@ fun  ls_command(){
 
 	}
 	println("")
+}
+
+fun cat_command(cmd_parts: List<String>){
+	if(existParam(cmd_parts, "cat")){
+		if(!File(stackFolder()+cmd_parts[1]).isDirectory() && existFolder(cmd_parts[1])){
+			var tmp = File(stackFolder()+cmd_parts[1]).readText()
+			println(tmp)
+		}
+		else{
+			println("cat: ${cmd_parts[1]}: É um diretorio ou arquivo não existente.")
+		}
+	}
+
 }
 
 fun mkdir_command(cmd_parts: List<String>){
@@ -154,6 +175,18 @@ fun rmdir_command(cmd_parts: List<String>){
 	}
 }
 
+fun rm_command(cmd_parts: List<String>){
+
+	if(existParam(cmd_parts, "rm")){
+		if(!File(stackFolder()+cmd_parts[1]).isDirectory() && existFolder(cmd_parts[1])){
+			
+			File(stackFolder(),cmd_parts[1]).delete()
+		}
+		else{
+			println("rm: não foi possivel remover '${cmd_parts[1]}': É um diretório")
+		}
+	}
+}
 
 fun existParam(cmd_parts: List<String>, command: String ): Boolean{
 	if(cmd_parts.size < 2 || cmd_parts[1] == ""){
