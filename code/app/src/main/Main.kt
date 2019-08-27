@@ -56,10 +56,6 @@ fun main(args: Array<String>) {
 	}
 }
 
-fun mv_command(cmd_parts: List<String>){
-	var tmp = File("ola").isDirectory()
-	println(tmp)
-}
 
 fun logo_command(): String{
 	print("${ESC}c") //Limpa a Tela
@@ -126,18 +122,27 @@ fun  ls_command(){
 	}
 	println("")
 }
+//mv para arquivos
+fun mv_command(cmd_parts: List<String>){
+	if(existParam(cmd_parts, "mv")){
+		if(existFolder(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
+			println(cat_command(cmd_parts))
+		}
+	}
+}
 
-fun cat_command(cmd_parts: List<String>){
+fun cat_command(cmd_parts: List<String>):String{
 	if(existParam(cmd_parts, "cat")){
 		if(!File(stackFolder()+cmd_parts[1]).isDirectory() && existFolder(cmd_parts[1])){
 			var tmp = File(stackFolder()+cmd_parts[1]).readText()
 			println(tmp)
+			return tmp
 		}
 		else{
 			println("cat: ${cmd_parts[1]}: É um diretorio ou arquivo não existente.")
 		}
 	}
-
+	return ""
 }
 
 fun mkdir_command(cmd_parts: List<String>){
