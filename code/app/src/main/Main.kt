@@ -1,16 +1,14 @@
+//Para Rodar o Kotlin use o commando para compilar
+//
+//kotlinc hello.kt -include-runtime -d hello.jar
+//
+//java -jar hello.jar
+
 package main
 import java.io.File
 
-/*
-Rodar o Kotlin
 
-kotlinc hello.kt -include-runtime -d hello.jar
-
-java -jar hello.jar
-
- */
-
-/* Sistema de Cores */
+// Sistema de Cores
 const val ESC = "\u001B"
 const val NORMAL = ESC + "[0"
 const val BOLD   = ESC + "[1"
@@ -29,6 +27,8 @@ const val TESTE = ";92m"
 
 var currentFolder = ArrayList<String>()
 
+
+//Funcao que monta o shell.
 fun main(args: Array<String>) {
 	logo_command()
 	currentFolder.add("./")
@@ -56,7 +56,7 @@ fun main(args: Array<String>) {
 	}
 }
 
-
+//Funcao que escreve o logo no terminal.
 fun logo_command(): String{
 	print("${ESC}c") //Limpa a Tela
 
@@ -76,6 +76,7 @@ fun logo_command(): String{
 
 }
 
+//Funcao de help para os comandos existentes.
 fun man_command(cmd_parts: List<String>){
 	if (existParam(cmd_parts, "man")){	
 		when(cmd_parts[1]){
@@ -85,6 +86,9 @@ fun man_command(cmd_parts: List<String>){
 			"mkdir" -> println("\nMKDIR: comando para criar pastas.\nEx: mkdir teste.\n")
 			"exit" -> println("\nEXIT: comando para sair do shell.\n")
 			"clear" -> println("\nCLEAR: comando para limpar a tela.\n")
+			"cat" -> println("\nCAT: comando para mostrar o conteudo de um arquivo.\nEx: cat ola.txt")
+			"rm" -> println("\nRM: comando para deletar um arquivo.\nEx: rm ola.txt")
+			"mv" -> println("\nMV: comando para mover arquivos de diretorios.\nEx: mv ola.txt pastadestino")
 			"help" -> println(logo_command()+"\nComandos Disponiveis: cd, ls, rmdir, mkdir, help, man, exit.\nPara saber mais informações é só digitar 'man <comando>'.\nEx: man ls\n")
 			"man" -> println("MAN: comando do manual, digite 'man help' para obter mais informações.");
 			else -> println("Esse comando não existe, tente 'man help'.")	
@@ -92,16 +96,15 @@ fun man_command(cmd_parts: List<String>){
 	}
 }
 
+//Funcao que possibilita a navegacao entre diretorios.
 fun  cd_command(cmd_parts: List<String>){
 	
 	if (existParam(cmd_parts, "cd")){
 
-		//if(cmd_parts[1] == "./") currentFolder = "./"
-
 		if(cmd_parts[1] == ".."){ 
 			stackFolderBack()
 		}
-		else if (!existFolder(cmd_parts[1])) {
+		else if (!existFIle(cmd_parts[1])) {
 			println("cd: ${cmd_parts[1]}: Arquivo ou diretório inexistente");
 		}else{	
 			currentFolder.add("${cmd_parts[1]}/")
@@ -110,6 +113,7 @@ fun  cd_command(cmd_parts: List<String>){
 	}
 }
 
+//Funcao que lista todo conteudo do diretorio atual.
 fun  ls_command(){
 	val folders = File(stackFolder()).listFiles().map{ it.name }
 	for (name in folders){
@@ -122,18 +126,20 @@ fun  ls_command(){
 	}
 	println("")
 }
-//mv para arquivos
+
+//Funcao que move arquivos de diretorios.
 fun mv_command(cmd_parts: List<String>){
 	if(existParam(cmd_parts, "mv")){
-		if(existFolder(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
+		if(existFIle(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
 			println(cat_command(cmd_parts))
 		}
 	}
 }
 
+//Funcao que le conteudos de um arquivo.
 fun cat_command(cmd_parts: List<String>):String{
 	if(existParam(cmd_parts, "cat")){
-		if(!File(stackFolder()+cmd_parts[1]).isDirectory() && existFolder(cmd_parts[1])){
+		if(!File(stackFolder()+cmd_parts[1]).isDirectory() && existFIle(cmd_parts[1])){
 			var tmp = File(stackFolder()+cmd_parts[1]).readText()
 			println(tmp)
 			return tmp
@@ -145,11 +151,12 @@ fun cat_command(cmd_parts: List<String>):String{
 	return ""
 }
 
+//Funcao que cria um diretorio.
 fun mkdir_command(cmd_parts: List<String>){
 
 	if(existParam(cmd_parts, "mkdir")){
 
-		if (existFolder(cmd_parts[1])) {
+		if (existFIle(cmd_parts[1])) {
 			println("mkdir: não foi possível criar o diretório “${cmd_parts[1]}”: Arquivo existe");
 		}else{
 			val file = File(stackFolder(),cmd_parts[1])
@@ -163,27 +170,25 @@ fun mkdir_command(cmd_parts: List<String>){
 	}
 }
 
+//Funcao que remove um diretorio ou arquivo.
 fun rmdir_command(cmd_parts: List<String>){
 
 	if(existParam(cmd_parts, "rmdir")){
 
-		if (!existFolder(cmd_parts[1])) {
+		if (!existFIle(cmd_parts[1])) {
 			println("rmdir: falhou em remover “${cmd_parts[1]}”: Arquivo ou diretório inexistente");
 		}else{
 			val file = File(stackFolder(),cmd_parts[1])
-			//if (file.isDirectory) {
 			file.deleteRecursively()
-			//} else {
-			//	file.delete()
-			//}
 		}
 	}
 }
 
+//Funcao que remove um arquivo.
 fun rm_command(cmd_parts: List<String>){
 
 	if(existParam(cmd_parts, "rm")){
-		if(!File(stackFolder()+cmd_parts[1]).isDirectory() && existFolder(cmd_parts[1])){
+		if(!File(stackFolder()+cmd_parts[1]).isDirectory() && existFIle(cmd_parts[1])){
 			
 			File(stackFolder(),cmd_parts[1]).delete()
 		}
@@ -193,16 +198,10 @@ fun rm_command(cmd_parts: List<String>){
 	}
 }
 
-fun existParam(cmd_parts: List<String>, command: String ): Boolean{
-	if(cmd_parts.size < 2 || cmd_parts[1] == ""){
-		println("Tente 'man $command' para mais informações.")
-		return false
-	}
-	return true
-} 
+//Funcao que verifica a existencia de um arquivo ou diretorio.
+fun existFIle(folder: String) = File(stackFolder()).listFiles().map{ it.name }.contains(folder)
 
-fun existFolder(folder: String) = File(stackFolder()).listFiles().map{ it.name }.contains(folder)
-
+//Funcao que retorna o caminho completo do diretorio atual.
 fun stackFolder():String{
 	var tmpFolder = ""
 	for (i in currentFolder){
@@ -211,8 +210,18 @@ fun stackFolder():String{
 	return tmpFolder
 }
 
+//Funcao que volta um diretorio.
 fun stackFolderBack(){
 	if(currentFolder.size > 1){
 		currentFolder.removeAt(currentFolder.size-1)
 	}
 }
+
+//Funcao que verifica se os parametros do comando estao certo.
+fun existParam(cmd_parts: List<String>, command: String ): Boolean{
+	if(cmd_parts.size < 2 || cmd_parts[1] == ""){
+		println("Tente 'man $command' para mais informações.")
+		return false
+	}
+	return true
+} 
