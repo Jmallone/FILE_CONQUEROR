@@ -1,14 +1,14 @@
 package main
 import java.io.File
-//http://thetechnocafe.com/build-a-file-explorer-in-kotlin-part-5-creating-deleting-files-and-folders/
-//
+
 /*
+Rodar o Kotlin
+
 kotlinc hello.kt -include-runtime -d hello.jar
 
 java -jar hello.jar
 
  */
-//Referencias
 
 /* Sistema de Cores */
 const val ESC = "\u001B"
@@ -55,6 +55,7 @@ fun main(args: Array<String>) {
 
 fun logo_command(): String{
 	print("${ESC}c") //Limpa a Tela
+
 	println("\n$NORMAL;92m    88      a8P                    88 88              ad88888ba  88                     88 88 $WHITE_F")  
  	println("$NORMAL;93m    88    ,88'               ,d    88 ''             d8'     '8b 88                     88 88 $WHITE_F")  
 	println("$NORMAL;94m    88  ,88'                 88    88                Y8,         88                     88 88 $WHITE_F")  
@@ -64,8 +65,9 @@ fun logo_command(): String{
  	println("$NORMAL;98m    88     '88, '8a,   ,a8'  88,   88 88 88       88 Y8a     a8P 88       88 '8b,   ,aa 88 88 $WHITE_F")  
  	println("$NORMAL;99m    88       Y8b `'YbbdP''   'Y888 88 88 88       88  'Y88888P'  88       88  `'Ybbd8'' 88 88 $WHITE_F\n\n")
 
-	println("Versão 0.1\n\n")
-
+	print("Versão 0.1 ")
+	println("$BOLD;92m                                         Criado por Michel Gomes & Juliano Petini$WHITE_F\n")
+	
 	return ""
 
 }
@@ -168,7 +170,6 @@ fun stackFolder():String{
 	for (i in currentFolder){
 		tmpFolder = "$tmpFolder$i"
 	}
-
 	return tmpFolder
 }
 
