@@ -131,7 +131,12 @@ fun  ls_command(){
 fun mv_command(cmd_parts: List<String>){
 	if(existParam(cmd_parts, "mv")){
 		if(existFIle(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
-			println(cat_command(cmd_parts))
+			var tmp = File(stackFolder()+cmd_parts[1]).readText()
+			rm_command(cmd_parts)
+
+			var file = File(cmd_parts[2])
+			file.writeText(tmp)
+
 		}
 	}
 }
