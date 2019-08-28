@@ -119,10 +119,8 @@ fun  cd_command(cmd_parts: List<String>){
 		
 		if(cmd_parts[1] == "./") {
 			currentFolder.clear()
-			currentFolder.add(${cmd_parts[1])
-		}
-
-		if(cmd_parts[1] == ".."){ 
+			currentFolder.add(cmd_parts[1])
+		}else if(cmd_parts[1] == ".."){ 
 			stackFolderBack()
 		}
 		else if (!existFIle(cmd_parts[1])) {
@@ -156,8 +154,10 @@ fun mv_command(cmd_parts: List<String>){
 		if(existFIle(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
 			var tmp = File(stackFolder()+cmd_parts[1]).readText()
 			rm_command(cmd_parts)
-			var file = File(cmd_parts[2])
+			var file = File(stackFolder()+cmd_parts[2])
 			file.writeText(tmp)
+		}else{
+			println("mv: Tente 'man mv' para mais informações.")
 		}
 	}
 }
