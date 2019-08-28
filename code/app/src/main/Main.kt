@@ -44,7 +44,20 @@ var currentFolder = ArrayList<String>() //Diretório atual
 //Funcao que monta e controla o shell.
 fun main(args: Array<String>) {
 	logo_command()
-	currentFolder.add("./")
+	
+
+	try{
+		if(File(args[0]).isDirectory()) {
+			currentFolder.add(args[0])
+		}
+		else{
+			println("Diretório invalido, definido o diretório padrao.")
+			currentFolder.add("./")
+		}
+	}catch(e: Exception){
+		currentFolder.add("./")
+	}
+
 	var cmd : String = "";
 
 	while(cmd !=  "exit" ){
@@ -62,7 +75,7 @@ fun main(args: Array<String>) {
 				"cat" -> cat_command(cmd_parts)
 				"rm" -> rm_command(cmd_parts)
 				"mv" -> mv_command(cmd_parts)
-				"locate" -> locate_command(cmd_parts)
+				"locate" -> locate_command(cmd_parts,stackFolder())
 				"exit" -> println("Saindo do Shell!")
 				else -> println("Esse comando não existe, tente 'man help'.")
 			}
@@ -150,6 +163,18 @@ fun  ls_command(){
 		}
 	}
 	println("")
+}
+
+fun locate_command(cmd_parts: List<String>,dir:String){
+	var tmp = File(dir).listFiles().map{ it.name }
+	//println(tmp)
+	for (folder in tmp){
+		if(folder.contains(cmd_parts[1])) println(dir+"/"+folder)
+		if(File(dir+"/"+folder).isDirectory())
+		{	
+			locate_command(cmd_parts,dir+"/"+folder)
+		}
+	}
 }
 
 //------------------------------------------------------------
