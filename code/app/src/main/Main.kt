@@ -1,34 +1,47 @@
-//Para Rodar o Kotlin use o commando para compilar
+//------------------------------------------------------------
+//				PROJETO FILE CONQUEROR - BCC35A
 //
-//kotlinc hello.kt -include-runtime -d hello.jar
+//Projeto com o intuito de fazer um sistema de arquivo
+//em kotlin sem usar chamada de sistema "syscall".
+//Comandos de [ls,cd,mkdir,mv,rmdir,rm,clear,man,locate,cat]
+//
+//Autores: Michel Gomes & Juliano Petini
+//------------------------------------------------------------
+
+//------------------------------------------------------------
+//						!IMPORTANTE!
+//
+//Para Rodar o Kotlin use o commando para compilar:
+//
+//kotlinc <nome do arquivo> -include-runtime -d hello.jar
 //
 //java -jar hello.jar
+//------------------------------------------------------------
 
 package main
 import java.io.File
 
-
-// Sistema de Cores
+//------------------------------------------------------------
+// 					Sistema de Cores
 const val ESC = "\u001B"
-const val NORMAL = ESC + "[0"
-const val BOLD   = ESC + "[1"
-const val BLACK_B  = ESC + "[0;40m"  // black background
-const val WHITE_F  = ESC + "[0;37m"  // normal white foreground
+const val NORMAL = ESC + "[0"		//Fonte normal
+const val BOLD   = ESC + "[1"		//Negrito
+const val BLACK_B  = ESC + "[0;40m" //Black background
+const val WHITE_F  = ESC + "[0;37m" //Normal white foreground
+const val RED = ";31m"				//Cor vermelha
+const val GREEN = ";32m"			//Cor verde
+const val YELLOW = ";33m"			//Cor amarela
+const val BLUE = ";34m"				//Cor azul
+const val MAGENTA = ";35m"			//Cor magenta
+const val CYAN = ";36m"				//Cor de ciano
+const val WHITE = ";37m"			//Cor branca
+const val TESTE = ";92m"			//Cor de teste
+//------------------------------------------------------------
 
-const val RED = ";31m"
-const val GREEN = ";32m"
-const val YELLOW = ";33m"
-const val BLUE = ";34m"
-const val MAGENTA = ";35m"
-const val CYAN = ";36m"
-const val WHITE = ";37m"
-const val TESTE = ";92m"
+var currentFolder = ArrayList<String>() //Diretório atual
 
-
-var currentFolder = ArrayList<String>()
-
-
-//Funcao que monta o shell.
+//------------------------------------------------------------
+//Funcao que monta e controla o shell.
 fun main(args: Array<String>) {
 	logo_command()
 	currentFolder.add("./")
@@ -36,7 +49,7 @@ fun main(args: Array<String>) {
 
 	while(cmd !=  "exit" ){
 			print(stackFolder());
-			print(" > ");
+			print("> ");
 			cmd = readLine()!!;
 			var cmd_parts = cmd.split(" ")
 			when(cmd_parts[0]){
@@ -56,6 +69,7 @@ fun main(args: Array<String>) {
 	}
 }
 
+//------------------------------------------------------------
 //Funcao que escreve o logo no terminal.
 fun logo_command(): String{
 	print("${ESC}c") //Limpa a Tela
@@ -69,33 +83,35 @@ fun logo_command(): String{
  	println("$NORMAL;98m    88     '88, '8a,   ,a8'  88,   88 88 88       88 Y8a     a8P 88       88 '8b,   ,aa 88 88 $WHITE_F")  
  	println("$NORMAL;99m    88       Y8b `'YbbdP''   'Y888 88 88 88       88  'Y88888P'  88       88  `'Ybbd8'' 88 88 $WHITE_F\n\n")
 
-	print("Versão 0.1 ")
+	print("$NORMAL;90m    Versão 0.1 ")
 	println("$BOLD;92m                                         Criado por Michel Gomes & Juliano Petini$WHITE_F\n")
 	
 	return ""
 
 }
 
+//------------------------------------------------------------
 //Funcao de help para os comandos existentes.
 fun man_command(cmd_parts: List<String>){
 	if (existParam(cmd_parts, "man")){	
 		when(cmd_parts[1]){
-			"cd" -> println("\nCD: comando para navegar entre as Pastas.\nEx: cd teste\n Usa-se 'cd ./' para voltar para a pasta raiz.\n")
-			"ls" -> println("\nLS: comando para mostrar o conteudo da pasta atual.\n")
-			"rmdir" -> println("\nRMDIR: comando para excluir pastas.\nEx: rmdir teste.\n")
-			"mkdir" -> println("\nMKDIR: comando para criar pastas.\nEx: mkdir teste.\n")
-			"exit" -> println("\nEXIT: comando para sair do shell.\n")
-			"clear" -> println("\nCLEAR: comando para limpar a tela.\n")
-			"cat" -> println("\nCAT: comando para mostrar o conteudo de um arquivo.\nEx: cat ola.txt")
-			"rm" -> println("\nRM: comando para deletar um arquivo.\nEx: rm ola.txt")
-			"mv" -> println("\nMV: comando para mover arquivos de diretorios.\nEx: mv ola.txt pastadestino")
-			"help" -> println(logo_command()+"\nComandos Disponiveis: cd, ls, rmdir, mkdir, help, man, exit.\nPara saber mais informações é só digitar 'man <comando>'.\nEx: man ls\n")
-			"man" -> println("MAN: comando do manual, digite 'man help' para obter mais informações.");
-			else -> println("Esse comando não existe, tente 'man help'.")	
+			"cd" -> println("\nNOME - CD\n\n    cd - comando para navegar entre as pastas.\n    cd ./ - para voltar para a pasta raiz.\n    cd .. - para voltar a uma pasta anterior.\n\nExemplo: cd test\n")
+			"ls" -> println("\nNOME - LS\n\n    ls: comando para mostrar o conteudo da pasta atual.\n")
+			"rmdir" -> println("\nNOME - RMDIR\n\n    rmdir: comando para excluir pastas.\n\nExemplo: rmdir teste.\n")
+			"mkdir" -> println("\nNOME - MKDIR\n\n    mkdir - comando para criar pastas.\n\nExemplo: mkdir teste.\n")
+			"exit" -> println("\nNOME - EXIT\n\n    exit - comando para sair do shell.\n")
+			"clear" -> println("\nNOME - CLEAR\n\n    clear - comando para limpar a tela.\n")
+			"cat" -> println("\nNOME - CAT\n\n    cat - comando para mostrar o conteudo de um arquivo.\n\nExemplo: cat ola.txt\n")
+			"rm" -> println("\nNOME - RM\n\n    rm - comando para deletar um arquivo.\n\nExemplo: rm ola.txt\n")
+			"mv" -> println("\nNOME - MV\n\n    mv - comando para mover arquivo de diretorio.\n\nExemplo: mv ola.txt pastadestino\n")
+			"help" -> println(logo_command()+"\nNOME - HELP\n\n    Comandos Disponiveis:[ cd, ls, rmdir, mkdir, help, man, exit ]\n\nPara saber mais informações é só digitar 'man <comando>'.\nExemplo: man ls\n")
+			"man" -> println("\nNOME - MAN\n\n   man - comando de manual de refêrencia, digite 'man help' para obter mais informações.\n");
+			else -> println("Esse comando não existe, tente 'man help'.\n")	
 		}
 	}
 }
 
+//------------------------------------------------------------
 //Funcao que possibilita a navegacao entre diretorios.
 fun  cd_command(cmd_parts: List<String>){
 	
@@ -105,7 +121,7 @@ fun  cd_command(cmd_parts: List<String>){
 			stackFolderBack()
 		}
 		else if (!existFIle(cmd_parts[1])) {
-			println("cd: ${cmd_parts[1]}: Arquivo ou diretório inexistente");
+			println("cd: ${cmd_parts[1]}: Arquivo ou diretório inexistente.");
 		}else{	
 			currentFolder.add("${cmd_parts[1]}/")
 		}
@@ -113,6 +129,7 @@ fun  cd_command(cmd_parts: List<String>){
 	}
 }
 
+//------------------------------------------------------------
 //Funcao que lista todo conteudo do diretorio atual.
 fun  ls_command(){
 	val folders = File(stackFolder()).listFiles().map{ it.name }
@@ -127,20 +144,20 @@ fun  ls_command(){
 	println("")
 }
 
+//------------------------------------------------------------
 //Funcao que move arquivos de diretorios.
 fun mv_command(cmd_parts: List<String>){
 	if(existParam(cmd_parts, "mv")){
 		if(existFIle(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
 			var tmp = File(stackFolder()+cmd_parts[1]).readText()
 			rm_command(cmd_parts)
-
 			var file = File(cmd_parts[2])
 			file.writeText(tmp)
-
 		}
 	}
 }
 
+//------------------------------------------------------------
 //Funcao que le conteudos de um arquivo.
 fun cat_command(cmd_parts: List<String>):String{
 	if(existParam(cmd_parts, "cat")){
@@ -156,32 +173,34 @@ fun cat_command(cmd_parts: List<String>):String{
 	return ""
 }
 
+//------------------------------------------------------------
 //Funcao que cria um diretorio.
 fun mkdir_command(cmd_parts: List<String>){
 
 	if(existParam(cmd_parts, "mkdir")){
 
 		if (existFIle(cmd_parts[1])) {
-			println("mkdir: não foi possível criar o diretório “${cmd_parts[1]}”: Arquivo existe");
+			println("mkdir: não foi possível criar o diretório “${cmd_parts[1]}”: Arquivo existe.");
 		}else{
 			val file = File(stackFolder(),cmd_parts[1])
 			try{
 				file.mkdir()
 			}catch(e: Exception){
-				println("Houve Erro de Exception");
+				println("Houve Erro de Exceção");
 				e.printStackTrace()
 			}
 		}
 	}
 }
 
+//------------------------------------------------------------
 //Funcao que remove um diretorio ou arquivo.
 fun rmdir_command(cmd_parts: List<String>){
 
 	if(existParam(cmd_parts, "rmdir")){
 
 		if (!existFIle(cmd_parts[1])) {
-			println("rmdir: falhou em remover “${cmd_parts[1]}”: Arquivo ou diretório inexistente");
+			println("rmdir: falhou em remover “${cmd_parts[1]}”: Arquivo ou diretório inexistente.");
 		}else{
 			val file = File(stackFolder(),cmd_parts[1])
 			file.deleteRecursively()
@@ -189,6 +208,7 @@ fun rmdir_command(cmd_parts: List<String>){
 	}
 }
 
+//------------------------------------------------------------
 //Funcao que remove um arquivo.
 fun rm_command(cmd_parts: List<String>){
 
@@ -198,14 +218,16 @@ fun rm_command(cmd_parts: List<String>){
 			File(stackFolder(),cmd_parts[1]).delete()
 		}
 		else{
-			println("rm: não foi possivel remover '${cmd_parts[1]}': É um diretório")
+			println("rm: não foi possivel remover '${cmd_parts[1]}': É um diretório ou não existe.")
 		}
 	}
 }
 
+//------------------------------------------------------------
 //Funcao que verifica a existencia de um arquivo ou diretorio.
 fun existFIle(folder: String) = File(stackFolder()).listFiles().map{ it.name }.contains(folder)
 
+//------------------------------------------------------------
 //Funcao que retorna o caminho completo do diretorio atual.
 fun stackFolder():String{
 	var tmpFolder = ""
@@ -215,6 +237,7 @@ fun stackFolder():String{
 	return tmpFolder
 }
 
+//------------------------------------------------------------
 //Funcao que volta um diretorio.
 fun stackFolderBack(){
 	if(currentFolder.size > 1){
@@ -222,6 +245,7 @@ fun stackFolderBack(){
 	}
 }
 
+//------------------------------------------------------------
 //Funcao que verifica se os parametros do comando estao certo.
 fun existParam(cmd_parts: List<String>, command: String ): Boolean{
 	if(cmd_parts.size < 2 || cmd_parts[1] == ""){
@@ -230,3 +254,4 @@ fun existParam(cmd_parts: List<String>, command: String ): Boolean{
 	}
 	return true
 } 
+//------------------------------------------------------------
