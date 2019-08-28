@@ -140,9 +140,12 @@ fun  ls_command(){
 		if(File(stackFolder()+name).isDirectory()){
 			print("$NORMAL$CYAN$name $WHITE_F")
 		}else{
-			print("$name ")
+			if(name.contains(".jar")){
+				print("$NORMAL$RED$name $WHITE_F")
+			}else{
+				print("$name ")
+			}
 		}
-
 	}
 	println("")
 }
