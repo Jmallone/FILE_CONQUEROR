@@ -83,8 +83,8 @@ fun logo_command(): String{
  	println("$NORMAL;98m    88     '88, '8a,   ,a8'  88,   88 88 88       88 Y8a     a8P 88       88 '8b,   ,aa 88 88 $WHITE_F")  
  	println("$NORMAL;99m    88       Y8b `'YbbdP''   'Y888 88 88 88       88  'Y88888P'  88       88  `'Ybbd8'' 88 88 $WHITE_F\n\n")
 
-	print("$NORMAL;90m    Versão 0.1 ")
-	println("$BOLD;92m                                         Criado por Michel Gomes & Juliano Petini$WHITE_F\n")
+	print("$NORMAL;90m    Versão 1.0 Beta ")
+	println("$BOLD;92m                                 Criado por Michel Gomes & Juliano Petini$WHITE_F\n")
 	
 	return ""
 
