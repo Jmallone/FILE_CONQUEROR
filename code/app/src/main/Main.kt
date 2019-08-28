@@ -106,7 +106,7 @@ fun man_command(cmd_parts: List<String>){
 			"cat" -> println("\nNOME - CAT\n\n    cat - comando para mostrar o conteudo de um arquivo.\n\nExemplo: cat ola.txt\n")
 			"rm" -> println("\nNOME - RM\n\n    rm - comando para deletar um arquivo.\n\nExemplo: rm ola.txt\n")
 			"mv" -> println("\nNOME - MV\n\n    mv - comando para mover arquivo de diretorio.\n\nExemplo: mv ola.txt pastadestino\n")
-			"help" -> println(logo_command()+"\nNOME - HELP\n\n    Comandos Disponiveis:[ cd, ls, rmdir, mkdir, help, man, exit ]\n\nPara saber mais informações é só digitar 'man <comando>'.\nExemplo: man ls\n")
+			"help" -> println(logo_command()+"\nNOME - HELP\n\n    Comandos Disponiveis:[ cd, ls, cat, rm, rmdir, mkdir, help,clear, man, exit ]\n\nPara saber mais informações é só digitar 'man <comando>'.\nExemplo: man ls\n")
 			"man" -> println("\nNOME - MAN\n\n   man - comando de manual de refêrencia, digite 'man help' para obter mais informações.\n");
 			else -> println("Esse comando não existe, tente 'man help'.\n")	
 		}
@@ -118,8 +118,11 @@ fun man_command(cmd_parts: List<String>){
 fun  cd_command(cmd_parts: List<String>){
 	
 	if (existParam(cmd_parts, "cd")){
-
-		if(cmd_parts[1] == ".."){ 
+		
+		if(cmd_parts[1] == "./") {
+			currentFolder.clear()
+			currentFolder.add(cmd_parts[1])
+		}else if(cmd_parts[1] == ".."){ 
 			stackFolderBack()
 		}
 		else if (!existFIle(cmd_parts[1])) {
@@ -139,9 +142,12 @@ fun  ls_command(){
 		if(File(stackFolder()+name).isDirectory()){
 			print("$NORMAL$CYAN$name $WHITE_F")
 		}else{
-			print("$name ")
+			if(name.contains(".jar")){
+				print("$NORMAL$RED$name $WHITE_F")
+			}else{
+				print("$name ")
+			}
 		}
-
 	}
 	println("")
 }
@@ -153,8 +159,10 @@ fun mv_command(cmd_parts: List<String>){
 		if(existFIle(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
 			var tmp = File(stackFolder()+cmd_parts[1]).readText()
 			rm_command(cmd_parts)
-			var file = File(cmd_parts[2])
+			var file = File(stackFolder()+cmd_parts[2])
 			file.writeText(tmp)
+		}else{
+			println("mv: Tente 'man mv' para mais informações.")
 		}
 	}
 }
