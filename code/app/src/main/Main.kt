@@ -62,6 +62,7 @@ fun main(args: Array<String>) {
 				"cat" -> cat_command(cmd_parts)
 				"rm" -> rm_command(cmd_parts)
 				"mv" -> mv_command(cmd_parts)
+				"locate" -> locate_command(cmd_parts)
 				"exit" -> println("Saindo do Shell!")
 				else -> println("Esse comando não existe, tente 'man help'.")
 			}
@@ -101,6 +102,7 @@ fun man_command(cmd_parts: List<String>){
 			"mkdir" -> println("\nNOME - MKDIR\n\n    mkdir - comando para criar pastas.\n\nExemplo: mkdir teste.\n")
 			"exit" -> println("\nNOME - EXIT\n\n    exit - comando para sair do shell.\n")
 			"clear" -> println("\nNOME - CLEAR\n\n    clear - comando para limpar a tela.\n")
+			"locate" -> println("FAZER DEPOIS\n")
 			"cat" -> println("\nNOME - CAT\n\n    cat - comando para mostrar o conteudo de um arquivo.\n\nExemplo: cat ola.txt\n")
 			"rm" -> println("\nNOME - RM\n\n    rm - comando para deletar um arquivo.\n\nExemplo: rm ola.txt\n")
 			"mv" -> println("\nNOME - MV\n\n    mv - comando para mover arquivo de diretorio.\n\nExemplo: mv ola.txt pastadestino\n")
