@@ -67,7 +67,7 @@ fun main(args: Array<String>) {
 			var cmd_parts = cmd.split(" ")
 			when(cmd_parts[0]){
 				"cd" -> cd_command(cmd_parts)
-				"ls" -> ls_command()
+				"ls" -> ls_command(cmd_parts)
 				"mkdir" -> mkdir_command(cmd_parts)
 				"rmdir" -> rmdir_command(cmd_parts)
 				"clear" -> print("${ESC}c")
@@ -75,6 +75,7 @@ fun main(args: Array<String>) {
 				"cat" -> cat_command(cmd_parts)
 				"rm" -> rm_command(cmd_parts)
 				"mv" -> mv_command(cmd_parts)
+				"mkfile" -> mkfile_command(cmd_parts)
 				"locate" -> locate_command(cmd_parts,stackFolder())
 				"exit" -> println("Saindo do Shell!")
 				else -> println("Esse comando não existe, tente 'man help'.")
@@ -115,7 +116,8 @@ fun man_command(cmd_parts: List<String>){
 			"mkdir" -> println("\nNOME - MKDIR\n\n    mkdir - comando para criar pastas.\n\nExemplo: mkdir teste.\n")
 			"exit" -> println("\nNOME - EXIT\n\n    exit - comando para sair do shell.\n")
 			"clear" -> println("\nNOME - CLEAR\n\n    clear - comando para limpar a tela.\n")
-			"locate" -> println("FAZER DEPOIS\n")
+			"locate" -> println("\nNOME - CLEAR\n\n    locate - comando para listar recursivamente arquivos de um diretorio.\n")
+			"mkfile" -> println("\nNOME - MKFILE\n\n	mkfile - comando para criar arquvios.\n")
 			"cat" -> println("\nNOME - CAT\n\n    cat - comando para mostrar o conteudo de um arquivo.\n\nExemplo: cat ola.txt\n")
 			"rm" -> println("\nNOME - RM\n\n    rm - comando para deletar um arquivo.\n\nExemplo: rm ola.txt\n")
 			"mv" -> println("\nNOME - MV\n\n    mv - comando para mover arquivo de diretorio.\n\nExemplo: mv ola.txt pastadestino\n")
@@ -149,26 +151,32 @@ fun  cd_command(cmd_parts: List<String>){
 
 //------------------------------------------------------------
 //Funcao que lista todo conteudo do diretorio atual.
-fun  ls_command(){
-	val folders = File(stackFolder()).listFiles().map{ it.name }
-	for (name in folders){
-		if(File(stackFolder()+name).isDirectory()){
-			print("$NORMAL$CYAN$name $WHITE_F")
-		}else{
-			if(name.contains(".jar")){
-				print("$NORMAL$RED$name $WHITE_F")
+fun  ls_command(cmd_parts: List<String>){
+	if(!(cmd_parts.size < 2 || cmd_parts[1] == "")){
+		println("FAZER DEPOIS");
+	}
+	else{
+		val folders = File(stackFolder()).listFiles().map{ it.name }
+		for (name in folders){
+			if(File(stackFolder()+name).isDirectory()){
+				print("$NORMAL$CYAN$name $WHITE_F")
 			}else{
-				print("$name ")
+				if(name.contains(".jar")){
+					print("$NORMAL$RED$name $WHITE_F")
+				}else{
+					print("$name ")
+				}
 			}
 		}
+		println("")
 	}
-	println("")
 }
 
+//------------------------------------------------------------
+//Funcao que lista o arquivo selecionado nos diretorios recursiamente.
 fun locate_command(cmd_parts: List<String>,dir:String){
 	if(existParam(cmd_parts, "locate")){
 	var tmp = File(dir).listFiles().map{ it.name }
-	//println(tmp)
 		for (folder in tmp){
 			if(folder.contains(cmd_parts[1])) println(dir+"/"+folder)
 			if(File(dir+"/"+folder).isDirectory())
@@ -226,6 +234,23 @@ fun mkdir_command(cmd_parts: List<String>){
 				println("Houve Erro de Exceção");
 				e.printStackTrace()
 			}
+		}
+	}
+}
+
+//------------------------------------------------------------
+//Funcao que cria arquivo.
+fun mkfile_command(cmd_parts: List<String>){
+	if(existParam(cmd_parts, "mkfile")){
+		if (!existFIle(cmd_parts[1])) {
+			var texto = ""
+			var i = 2;
+			while(i < cmd_parts.size){
+				texto = texto +cmd_parts[i].replace("\"" , "")
+				texto = texto + " "
+				i++;
+			} 
+			File(cmd_parts[1]).writeText(texto)
 		}
 	}
 }
