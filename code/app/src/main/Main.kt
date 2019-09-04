@@ -166,14 +166,16 @@ fun  ls_command(){
 }
 
 fun locate_command(cmd_parts: List<String>,dir:String){
+	if(existParam(cmd_parts, "locate")){
 	var tmp = File(dir).listFiles().map{ it.name }
 	//println(tmp)
-	for (folder in tmp){
-		if(folder.contains(cmd_parts[1])) println(dir+"/"+folder)
-		if(File(dir+"/"+folder).isDirectory())
-		{	
-			locate_command(cmd_parts,dir+"/"+folder)
-		}
+		for (folder in tmp){
+			if(folder.contains(cmd_parts[1])) println(dir+"/"+folder)
+			if(File(dir+"/"+folder).isDirectory())
+			{	
+				locate_command(cmd_parts,dir+"/"+folder)
+			}
+	}
 	}
 }
 
