@@ -208,8 +208,18 @@ fun  ls_command(cmd_parts: List<String>){
 		}
 		if((cmd_parts.size == 3 && cmd_parts[2] == "-sortasc") || cmd_parts[1] == "-sortasc") listFolders.sort()
 		if((cmd_parts.size == 3 && cmd_parts[2] == "-sortdesc") || cmd_parts[1] == "-sortdesc") listFolders.sortDescending()
-		println(listFolders)
-
+		for (name in listFolders){
+			if(File(stackFolder()+name).isDirectory()){
+				print("$NORMAL$CYAN$name $WHITE_F")
+			}else{
+				if(name.contains(".jar")){
+					print("$NORMAL$RED$name $WHITE_F")
+				}else{
+					print("$name ")
+				}
+			}
+		}
+		println("")
 	}
 	else{
 		val folders = File(stackFolder()).listFiles().map{ it.name }
