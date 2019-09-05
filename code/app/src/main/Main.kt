@@ -156,22 +156,73 @@ fun  ls_command(cmd_parts: List<String>){
 	
 	if(!(cmd_parts.size < 2 || cmd_parts[1] == "")){
 
-		val ordem = mutableListOf("abc","bcd","xyz","ghi","acd")
+		var listFolders =  mutableListOf("")
+		listFolders.removeAt(0)
+		val folders = File(stackFolder()).listFiles().map{ it.name }
+		for (name in folders){
+			listFolders.add(name)
+		}
 
-		ordem.add("ola");
-		println(ordem.sorted())
+		if(cmd_parts[1] == "-dir"){
+			
+			var tmp = mutableListOf("")
+			tmp.removeAt(0)
+			for (i in listFolders){
+				if(!(i[0] == '.')){
+					if(File(i).isDirectory()){
+						tmp.add(i)
+					}
+				}
+			}
+			listFolders.retainAll(tmp)//teoria de conjuntps
+		}
+		if(cmd_parts[1] == "-file"){
+			var tmp = mutableListOf("")
+			tmp.removeAt(0)
+			for (i in listFolders){
+				if(!(i[0] == '.')){
+					if(!(File(i).isDirectory())){
+						tmp.add(i)
+					}
+				}
+			}
+			listFolders.retainAll(tmp)//teoria de conjuntps
+		}
+		if(cmd_parts[1] == "-hidden"){
+			var tmp = mutableListOf("")
+			tmp.removeAt(0)
+			for (i in listFolders){
+				if((i[0] == '.')){
+					tmp.add(i)
+				}
+			}
+			listFolders.retainAll(tmp)//teoria de conjuntps
+		}
+		if(cmd_parts[1] == "-full"){
+			var tmp = mutableListOf("")
+			tmp.removeAt(0)
+			for (i in listFolders){
+				tmp.add(i)
+			}
+			listFolders.retainAll(tmp)//teoria de conjuntos
+		}
+		if((cmd_parts.size == 3 && cmd_parts[2] == "-sortasc") || cmd_parts[1] == "-sortasc") listFolders.sort()
+		if((cmd_parts.size == 3 && cmd_parts[2] == "-sortdesc") || cmd_parts[1] == "-sortdesc") listFolders.sortDescending()
+		println(listFolders)
 
 	}
 	else{
 		val folders = File(stackFolder()).listFiles().map{ it.name }
 		for (name in folders){
-			if(File(stackFolder()+name).isDirectory()){
-				print("$NORMAL$CYAN$name $WHITE_F")
-			}else{
-				if(name.contains(".jar")){
-					print("$NORMAL$RED$name $WHITE_F")
+			if(!(name[0] == '.')){
+				if(File(stackFolder()+name).isDirectory()){
+					print("$NORMAL$CYAN$name $WHITE_F")
 				}else{
-					print("$name ")
+					if(name.contains(".jar")){
+						print("$NORMAL$RED$name $WHITE_F")
+					}else{
+						print("$name ")
+					}
 				}
 			}
 		}
