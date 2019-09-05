@@ -310,7 +310,6 @@ fun mkdir_command(cmd_parts: List<String>){
 //Funcao que cria arquivo.
 fun mkfile_command(cmd_parts: List<String>){
 	if(existParam(cmd_parts, "mkfile")){
-		if (!existFIle(cmd_parts[1])) {
 			var texto = ""
 			var i = 2;
 			while(i < cmd_parts.size){
@@ -319,7 +318,6 @@ fun mkfile_command(cmd_parts: List<String>){
 				i++;
 			} 
 			File(cmd_parts[1]).writeText(texto)
-		}
 	}
 }
 
