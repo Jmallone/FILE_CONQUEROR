@@ -3,7 +3,7 @@
 //
 //Projeto com o intuito de fazer um sistema de arquivo
 //em kotlin sem usar chamada de sistema "syscall".
-//Comandos de [ls,cd,mkdir,mv,rmdir,rm,clear,man,locate,cat]
+//Comandos de [ cd, ls, cat, rm, rmdir, mkdir, mkfile, locate,  help, clear, man, exit ]
 //
 //Autores: Michel Gomes & Juliano Petini
 //------------------------------------------------------------
@@ -121,7 +121,7 @@ fun man_command(cmd_parts: List<String>){
 			"cat" -> println("\nNOME - CAT\n\n    cat - comando para mostrar o conteudo de um arquivo.\n\nExemplo: cat ola.txt\n")
 			"rm" -> println("\nNOME - RM\n\n    rm - comando para deletar um arquivo.\n\nExemplo: rm ola.txt\n")
 			"mv" -> println("\nNOME - MV\n\n    mv - comando para mover arquivo de diretorio.\n\nExemplo: mv ola.txt pastadestino\n")
-			"help" -> println(logo_command()+"\nNOME - HELP\n\n    Comandos Disponiveis:[ cd, ls, cat, rm, rmdir, mkdir, help,clear, man, exit ]\n\nPara saber mais informações é só digitar 'man <comando>'.\nExemplo: man ls\n")
+			"help" -> println(logo_command()+"\nNOME - HELP\n\n    Comandos Disponiveis:[ cd, ls, cat, rm, rmdir, mkdir, mkfile, locate,  help, clear, man, exit ]\n\nPara saber mais informações é só digitar 'man <comando>'.\nExemplo: man ls\n")
 			"man" -> println("\nNOME - MAN\n\n   man - comando de manual de refêrencia, digite 'man help' para obter mais informações.\n");
 			else -> println("Esse comando não existe, tente 'man help'.\n")	
 		}
@@ -152,8 +152,15 @@ fun  cd_command(cmd_parts: List<String>){
 //------------------------------------------------------------
 //Funcao que lista todo conteudo do diretorio atual.
 fun  ls_command(cmd_parts: List<String>){
+
+	
 	if(!(cmd_parts.size < 2 || cmd_parts[1] == "")){
-		println("FAZER DEPOIS");
+
+		val ordem = mutableListOf("abc","bcd","xyz","ghi","acd")
+
+		ordem.add("ola");
+		println(ordem.sorted())
+
 	}
 	else{
 		val folders = File(stackFolder()).listFiles().map{ it.name }
