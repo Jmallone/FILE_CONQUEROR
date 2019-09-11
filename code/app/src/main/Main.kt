@@ -19,7 +19,11 @@
 //------------------------------------------------------------
 
 package main
+import java.nio.file.Paths
 import java.io.File
+import java.io.*
+import java.nio.file.Files
+import java.nio.file.*
 
 //------------------------------------------------------------
 // 					Sistema de Cores
@@ -126,6 +130,38 @@ fun man_command(cmd_parts: List<String>){
 			else -> println("Esse comando não existe, tente 'man help'.\n")	
 		}
 	}
+}
+
+fun mv_command(cmd_parts: List<String>){
+
+	if(File(cmd_parts[1]).isDirectory()){
+		var temp = mutableListOf("", cmd_parts[2] +"/"+ cmd_parts[1])
+		mkdir_command(temp)
+		
+		val folders = File(stackFolder() + cmd_parts[1]).listFiles().map{ it.name }
+		
+		for(folder in folders){
+			if(File(stackFolder() + cmd_parts[1] + "/" + folder).isDirectory())
+			{
+				var tmp = mutableListOf("", temp[1] + "/" + folder)
+				mkdir_command(tmp)
+			}
+			else{
+				var tmp = File(cmd_parts[1] + "/" + folder).readText()
+				var file = File(cmd_parts[2] + "/" + cmd_parts[1] + "/" + folder)
+				file.writeText(tmp)
+			}
+			var tmp = mutableListOf("",cmd_parts[1] +"/"+ folder , cmd_parts[2]+"/" )
+			println("origin: " + cmd_parts[1] +"/"+ folder)
+			println("origin: " + cmd_parts[2] +"/"+ folder)
+			mv_command(tmp)
+		}
+
+		
+	}else{
+		Files.move(Paths.get(stackFolder() + cmd_parts[1]), Paths.get(stackFolder() + cmd_parts[2]))
+	}
+
 }
 
 //------------------------------------------------------------
@@ -257,7 +293,7 @@ fun locate_command(cmd_parts: List<String>,dir:String){
 
 //------------------------------------------------------------
 //Funcao que move arquivos de diretorios.
-fun mv_command(cmd_parts: List<String>){
+fun mv_command2(cmd_parts: List<String>){
 	if(existParam(cmd_parts, "mv")){
 		if(existFIle(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
 			var tmp = File(stackFolder()+cmd_parts[1]).readText()
@@ -269,6 +305,7 @@ fun mv_command(cmd_parts: List<String>){
 		}
 	}
 }
+
 
 //------------------------------------------------------------
 //Funcao que le conteudos de um arquivo.
