@@ -3,7 +3,7 @@
 //
 //Projeto com o intuito de fazer um sistema de arquivo
 //em kotlin sem usar chamada de sistema "syscall".
-//Comandos de [ cd, ls, cat, rm, rmdir, mkdir, mkfile, locate,  help, clear, man, exit ]
+//Comandos de [ cd, ls, cat, rm, rmdir, mkdir, mkfile, locate, mv , copy,  help, clear, man, exit ]
 //
 //Autores: Michel Gomes & Juliano Petini
 //------------------------------------------------------------
@@ -19,11 +19,7 @@
 //------------------------------------------------------------
 
 package main
-import java.nio.file.Paths
 import java.io.File
-import java.io.*
-import java.nio.file.Files
-import java.nio.file.*
 
 //------------------------------------------------------------
 // 					Sistema de Cores
@@ -80,6 +76,7 @@ fun main(args: Array<String>) {
 				"rm" -> rm_command(cmd_parts)
 				"mv" -> mv_command(cmd_parts)
 				"mkfile" -> mkfile_command(cmd_parts)
+				"copy" -> copy_command(cmd_parts)
 				"locate" -> locate_command(cmd_parts,stackFolder())
 				"exit" -> println("Saindo do Shell!")
 				else -> println("Esse comando não existe, tente 'man help'.")
@@ -123,45 +120,14 @@ fun man_command(cmd_parts: List<String>){
 			"locate" -> println("\nNOME - CLEAR\n\n    locate - comando para listar recursivamente arquivos de um diretorio.\n")
 			"mkfile" -> println("\nNOME - MKFILE\n\n	mkfile - comando para criar arquvios.\n")
 			"cat" -> println("\nNOME - CAT\n\n    cat - comando para mostrar o conteudo de um arquivo.\n\nExemplo: cat ola.txt\n")
+			"copy" -> println("\nNOME - COPY\n\n    copy - comando para copiar um aquivo ou pasta para outra pasta.\n\nExemplo: copy ola.txt teste\nExemplo: copy pasta_origem pasta_destino\n")
 			"rm" -> println("\nNOME - RM\n\n    rm - comando para deletar um arquivo.\n\nExemplo: rm ola.txt\n")
-			"mv" -> println("\nNOME - MV\n\n    mv - comando para mover arquivo de diretorio.\n\nExemplo: mv ola.txt pastadestino\n")
+			"mv" -> println("\nNOME - MV\n\n    mv - comando para mover arquivo e diretorio.\n\nExemplo: mv ola.txt pastadestino\nExemplo: mv pasta_origem pasta_destino")
 			"help" -> println(logo_command()+"\nNOME - HELP\n\n    Comandos Disponiveis:[ cd, ls, cat, rm, rmdir, mkdir, mkfile, locate,  help, clear, man, exit ]\n\nPara saber mais informações é só digitar 'man <comando>'.\nExemplo: man ls\n")
 			"man" -> println("\nNOME - MAN\n\n   man - comando de manual de refêrencia, digite 'man help' para obter mais informações.\n");
 			else -> println("Esse comando não existe, tente 'man help'.\n")	
 		}
 	}
-}
-
-fun mv_command(cmd_parts: List<String>){
-
-	if(File(cmd_parts[1]).isDirectory()){
-		var temp = mutableListOf("", cmd_parts[2] +"/"+ cmd_parts[1])
-		mkdir_command(temp)
-		
-		val folders = File(stackFolder() + cmd_parts[1]).listFiles().map{ it.name }
-		
-		for(folder in folders){
-			if(File(stackFolder() + cmd_parts[1] + "/" + folder).isDirectory())
-			{
-				var tmp = mutableListOf("", temp[1] + "/" + folder)
-				mkdir_command(tmp)
-			}
-			else{
-				var tmp = File(cmd_parts[1] + "/" + folder).readText()
-				var file = File(cmd_parts[2] + "/" + cmd_parts[1] + "/" + folder)
-				file.writeText(tmp)
-			}
-			var tmp = mutableListOf("",cmd_parts[1] +"/"+ folder , cmd_parts[2]+"/" )
-			println("origin: " + cmd_parts[1] +"/"+ folder)
-			println("origin: " + cmd_parts[2] +"/"+ folder)
-			mv_command(tmp)
-		}
-
-		
-	}else{
-		Files.move(Paths.get(stackFolder() + cmd_parts[1]), Paths.get(stackFolder() + cmd_parts[2]))
-	}
-
 }
 
 //------------------------------------------------------------
@@ -182,6 +148,52 @@ fun  cd_command(cmd_parts: List<String>){
 			currentFolder.add("${cmd_parts[1]}/")
 		}
 	
+	}
+}
+
+//------------------------------------------------------------
+//Funcao que copia arquivos de diretorios.
+fun copy_command(cmd_parts: List<String>){
+	// verificar se os Dois parametros são Arquivos 
+	//Fazer verificações
+	if(existParam(cmd_parts, "copy")){
+
+		if (File(cmd_parts[1]).isDirectory()){
+
+			mkdir_command(listOf("mkdir",cmd_parts[2]+"/"+cmd_parts[1]))
+			val folders = File(cmd_parts[1]).listFiles().map{ it.name }
+			for (name in folders){
+				if(File(cmd_parts[1]+"/"+name).isDirectory()){
+
+					mkdir_command(listOf("mkdir",cmd_parts[2]+"/"+cmd_parts[1]+"/"+name))
+					copy_command(listOf("mv",cmd_parts[1]+"/"+name, cmd_parts[2]));
+
+				}else{
+					var tmp = File(cmd_parts[1] + "/" + name).readText()
+					var file = File(cmd_parts[2] + "/" + cmd_parts[1] + "/" + name)
+					file.writeText(tmp)
+				}
+
+			}
+		}else{
+
+			//println("Primeiro Parametro  parametro é um arquivo")
+			var tmp = File(cmd_parts[1]).readText()
+			var file = File(cmd_parts[2] + "/" + cmd_parts[1])
+			file.writeText(tmp)
+		}
+	}
+}
+
+
+//------------------------------------------------------------
+//Funcao que move arquivos de diretorios.
+fun mv_command(cmd_parts: List<String>){
+	if(existParam(cmd_parts, "mv")){
+
+		println("OLA");
+		copy_command(cmd_parts)
+		rmdir_command(listOf("rmdir",cmd_parts[1]))
 	}
 }
 
@@ -288,21 +300,6 @@ fun locate_command(cmd_parts: List<String>,dir:String){
 				locate_command(cmd_parts,dir+"/"+folder)
 			}
 	}
-	}
-}
-
-//------------------------------------------------------------
-//Funcao que move arquivos de diretorios.
-fun mv_command2(cmd_parts: List<String>){
-	if(existParam(cmd_parts, "mv")){
-		if(existFIle(cmd_parts[1]) && cmd_parts.size == 3 && !File(stackFolder()+cmd_parts[1]).isDirectory()){
-			var tmp = File(stackFolder()+cmd_parts[1]).readText()
-			rm_command(cmd_parts)
-			var file = File(stackFolder()+cmd_parts[2])
-			file.writeText(tmp)
-		}else{
-			println("mv: Tente 'man mv' para mais informações.")
-		}
 	}
 }
 
