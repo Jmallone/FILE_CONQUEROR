@@ -112,7 +112,7 @@ fun man_command(cmd_parts: List<String>){
 	if (existParam(cmd_parts, "man")){	
 		when(cmd_parts[1]){
 			"cd" -> println("\nNOME - CD\n\n    cd - comando para navegar entre as pastas.\n    cd ./ - para voltar para a pasta raiz.\n    cd .. - para voltar a uma pasta anterior.\n\nExemplo: cd test\n")
-			"ls" -> println("\nNOME - LS\n\n    ls: comando para mostrar o conteudo da pasta atual.\n")
+			"ls" -> println("\nNOME - LS\n\n    ls: comando para mostrar o conteudo da pasta atual.\n\nExemplo:\n       ls -hidden (Comando para mostrar arquivos ocultos).\n       ls -dir (Comando para mostrar somente diretorios).\n       ls -file (Comando para mostrar somente arquivos).\n       ls -full (Comando para mostrar todos arquivos e pastas).\n As ordenações podem ser usados isoladas ou em conjuntos com comandos anteriores:\n       ls -sortasc (Comando para mostrar em ordem crescente).\n       ls -sortdesc (Comando para mostrar em ordem decrescente).\n       ls -file -sortdesc (Comando para mostrar só arquivos em ordem decrescente).")
 			"rmdir" -> println("\nNOME - RMDIR\n\n    rmdir: comando para excluir pastas.\n\nExemplo: rmdir teste.\n")
 			"mkdir" -> println("\nNOME - MKDIR\n\n    mkdir - comando para criar pastas.\n\nExemplo: mkdir teste.\n")
 			"exit" -> println("\nNOME - EXIT\n\n    exit - comando para sair do shell.\n")
@@ -191,7 +191,6 @@ fun copy_command(cmd_parts: List<String>){
 fun mv_command(cmd_parts: List<String>){
 	if(existParam(cmd_parts, "mv")){
 
-		println("OLA");
 		copy_command(cmd_parts)
 		rmdir_command(listOf("rmdir",cmd_parts[1]))
 	}
