@@ -326,7 +326,14 @@ fun mkdir_command(cmd_parts: List<String>){
 	if(existParam(cmd_parts, "mkdir")){
 
 		if (existFIle(cmd_parts[1])) {
-			println("mkdir: não foi possível criar o diretório “${cmd_parts[1]}”: Arquivo existe.");
+			println("mkdir: não foi possível criar o diretório “${cmd_parts[1]}”: Arquivo existe.\n Deseja confirmar a substituição? [y][n] ");
+			var tmp = readLine()!!;
+			if (tmp[0] == 'y'){
+				rmdir_command(cmd_parts)
+				mkdir_command(cmd_parts)
+
+			}
+
 		}else{
 			val file = File(stackFolder(),cmd_parts[1])
 			try{
@@ -343,6 +350,17 @@ fun mkdir_command(cmd_parts: List<String>){
 //Funcao que cria arquivo.
 fun mkfile_command(cmd_parts: List<String>){
 	if(existParam(cmd_parts, "mkfile")){
+
+		if (existFIle(cmd_parts[1])) {
+			println("mkfile: não foi possível criar este arquivo “${cmd_parts[1]}”: Arquivo existe.\n Deseja confirmar a substituição? [y][n] ");
+			
+			var tmp = readLine()!!;
+			if (tmp[0] == 'y'){
+				rmdir_command(cmd_parts)
+				mkfile_command(cmd_parts)
+			}
+
+		}else{
 			var texto = ""
 			var i = 2;
 			while(i < cmd_parts.size){
@@ -351,6 +369,7 @@ fun mkfile_command(cmd_parts: List<String>){
 				i++;
 			} 
 			File(stackFolder()+cmd_parts[1]).writeText(texto)
+		}
 	}
 }
 
