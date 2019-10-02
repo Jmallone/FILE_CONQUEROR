@@ -118,7 +118,7 @@ fun man_command(cmd_parts: List<String>){
 			"exit" -> println("\nNOME - EXIT\n\n    exit - comando para sair do shell.\n")
 			"clear" -> println("\nNOME - CLEAR\n\n    clear - comando para limpar a tela.\n")
 			"locate" -> println("\nNOME - CLEAR\n\n    locate - comando para listar recursivamente arquivos de um diretorio.\n")
-			"mkfile" -> println("\nNOME - MKFILE\n\n	mkfile - comando para criar arquvios.\n")
+			"mkfile" -> println("\nNOME - MKFILE\n\n	mkfile - comando para criar arquvios.\n\nExemplo: mkfile ola.txt \"Meu Texto\"\n")
 			"cat" -> println("\nNOME - CAT\n\n    cat - comando para mostrar o conteudo de um arquivo.\n\nExemplo: cat ola.txt\n")
 			"copy" -> println("\nNOME - COPY\n\n    copy - comando para copiar um aquivo ou pasta para outra pasta.\n\nExemplo: copy ola.txt teste\nExemplo: copy pasta_origem pasta_destino\n")
 			"rm" -> println("\nNOME - RM\n\n    rm - comando para deletar um arquivo.\n\nExemplo: rm ola.txt\n")
@@ -351,7 +351,7 @@ fun mkfile_command(cmd_parts: List<String>){
 				texto = texto + " "
 				i++;
 			} 
-			File(cmd_parts[1]).writeText(texto)
+			File(stackFolder()+cmd_parts[1]).writeText(texto)
 	}
 }
 
